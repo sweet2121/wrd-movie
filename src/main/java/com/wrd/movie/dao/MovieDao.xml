@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wrd.movie.dao.MovieDao">
+  
+ <select id="selects" resultType="Movie">
+ 
+     select * from movie
+ 	<where>
+ 		<if test="name!=null and name!=''">
+ 			name like '%${name}%'
+ 		</if>
+ 		<if test="t1!=null and t1!=''">
+ 			and uptime &gt;=#{t1}
+ 		</if>
+ 		<if test="t2=null and t2!=''">
+ 			and uptime &lt;=#{t2}
+ 		</if>
+ 		<if test="actor!=null and actor!=''">
+ 			and actor like '%${actor}%'
+ 		</if>
+ 		<if test="p1!=null">
+ 			and price &gt;=#{p1}
+ 		</if>
+ 		<if test="p2=null">
+ 			and price &lt;=#{p2}
+ 		</if>
+ 		<if test="years!=null">
+ 			and years =#{years}
+ 		</if>
+ 		<if test="l1!=null and l1!=''">
+ 			and longtime &gt;=#{l1}
+ 		</if>
+ 		<if test="l2=null and l2!=''">
+ 			and longtime &lt;=#{l2}
+ 		</if>
+ 	</where>
+ 	<!-- 动态排序 -->
+ 	<if test="(orderName!=null and orderName!='') and (orderMethod!=null and orderMethod!='')">
+ 		order by ${orderName} ${orderMethod}
+ 	</if>
+ </select>
+
+	<select id="toAdd" resultType="Movie">
+		select * from movie
+	</select>
+	<insert id="add" useGeneratedKeys="true" keyProperty="id">
+		insert into movie values(null,#{name},#{actor},#{price},#{uptime},#{longtime},#{type},#{years},#{area},#{status})
+	</insert>
+	
+	<delete id="delete">
+		delete from movie where id in
+		<foreach collection="array" item="id" separator="," open="(" close=")">
+			#{id}
+		</foreach>
+	</delete>
+</mapper>
